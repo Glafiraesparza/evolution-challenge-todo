@@ -1,12 +1,29 @@
 
 import { useEffect, useState } from "react";
 import { checkHealth } from "./services/api";
+
 import Header from "./components/Header";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 
+const exampleTasks = [
+  {
+    id: 1,
+    title: "Estudiar React",
+    description: "Repasar componentes y props",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Configurar Docker",
+    description: "Verificar los contenedores",
+    completed: true,
+  },
+];
+
 function App() {
   const [status, setStatus] = useState("Conectando...");
+  const [tasks, setTasks] = useState(exampleTasks);
 
   useEffect(() => {
     checkHealth()
@@ -17,24 +34,17 @@ function App() {
         setStatus("Sin conexión");
       });
   }, []);
-    const handleCreateTask = async (taskData) => {
-    console.log("Tarea enviada:", taskData);
-  };
-  const exampleTasks = [
-    {
-      id: 1,
-      title: "Estudiar React",
-      description: "Repasar componentes y props",
-      completed: false,
-    },
-    {
-      id: 2,
-      title: "Configurar Docker",
-      description: "Verificar los contenedores",
-      completed: true,
-    },
-  ];
 
+  const handleCreateTask = async (taskData) => {
+    const newTask = {
+      id: Date.now(),
+      ...taskData,
+    };
+
+    setTasks((currentTasks) => [...currentTasks, newTask]);
+  };
+
+  // Estas funciones se implementarán en los siguientes pasos.
   const handleEditTask = (task) => {
     console.log("Editar:", task);
   };
@@ -47,8 +57,6 @@ function App() {
     console.log("Cambiar estado:", id);
   };
 
-
-
   return (
     <div className="min-vh-100 bg-light">
       <Header status={status} />
@@ -56,14 +64,15 @@ function App() {
       <main className="container py-5">
         <div className="text-center mb-4">
           <h2 className="fw-bold">Mis tareas</h2>
-            <p className="text-muted">
-              Organiza tus actividades de manera sencilla.
-            </p>
+          <p className="text-muted">
+            Organiza tus actividades de manera sencilla.
+          </p>
         </div>
 
         <TaskForm onSubmit={handleCreateTask} />
+
         <TaskList
-          tasks={exampleTasks}
+          tasks={tasks}
           onEdit={handleEditTask}
           onDelete={handleDeleteTask}
           onToggle={handleToggleTask}
