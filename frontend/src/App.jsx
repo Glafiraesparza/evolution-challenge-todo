@@ -56,7 +56,13 @@ function App() {
   };
 
   const handleToggleTask = (id) => {
-    console.log("Cambiar estado:", id);
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    );
   };
 
   const handleUpdateTask = async (taskData) => {
