@@ -1,30 +1,28 @@
 
 import { useEffect, useState } from "react";
+
 import { checkHealth } from "./services/api";
+import { useTasks } from "./hooks/useTasks";
 
 import Header from "./components/Header";
 import TaskForm from "./components/TaskForm";
 import TaskList from "./components/TaskList";
 
-const exampleTasks = [
-  {
-    id: 1,
-    title: "Estudiar React",
-    description: "Repasar componentes y props",
-    completed: false,
-  },
-  {
-    id: 2,
-    title: "Configurar Docker",
-    description: "Verificar los contenedores",
-    completed: true,
-  },
-];
-
 function App() {
   const [status, setStatus] = useState("Conectando...");
-  const [tasks, setTasks] = useState(exampleTasks);
   const [editingTask, setEditingTask] = useState(null);
+  const [actionError, setActionError] = useState(null);
+
+  const {
+    tasks,
+    loading,
+    error,
+    reloadTasks,
+    addTask,
+    editTask,
+    removeTask,
+    toggleTask,
+  } = useTasks();
 
   useEffect(() => {
     checkHealth()
@@ -37,61 +35,64 @@ function App() {
   }, []);
 
   const handleCreateTask = async (taskData) => {
-    const newTask = {
-      id: Date.now(),
-      ...taskData,
-    };
-
-    setTasks((currentTasks) => [...currentTasks, newTask]);
+    setActionError(null);
+    try {
+      await addTask(taskData);
+    } catch (err) {
+      setActionError(err.message);
+      throw err;
+    }
   };
 
-  // Estas funciones se implementarán en los siguientes pasos.
   const handleEditTask = (task) => {
     setEditingTask(task);
+    setActionError(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleDeleteTask = (id) => {
+  const handleUpdateTask = async (taskData) => {
+    if (!editingTask) return;
+
+    setActionError(null);
+    try {
+      await editTask(editingTask.id, taskData);
+      setEditingTask(null);
+    } catch (err) {
+      setActionError(err.message);
+      throw err;
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
     const confirmed = window.confirm(
       "¿Estás seguro de que deseas eliminar esta tarea?"
     );
 
     if (!confirmed) return;
 
-    setTasks((currentTasks) =>
-      currentTasks.filter((task) => task.id !== id)
-    );
-
-    // Si estamos editando esa tarea, cancelar la edición.
-    setEditingTask((currentTask) =>
-      currentTask?.id === id ? null : currentTask
-    );
+    setActionError(null);
+    try {
+      await removeTask(id);
+      setEditingTask((currentTask) =>
+        currentTask?.id === id ? null : currentTask
+      );
+    } catch (err) {
+      setActionError(err.message);
+    }
   };
 
-  const handleToggleTask = (id) => {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === id
-          ? { ...task, completed: !task.completed }
-          : task
-      )
-    );
-  };
-
-  const handleUpdateTask = async (taskData) => {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === editingTask.id
-          ? { ...task, ...taskData }
-          : task
-      )
-    );
-
-    setEditingTask(null);
+  const handleToggleTask = async (id) => {
+    setActionError(null);
+    try {
+      await toggleTask(id);
+    } catch (err) {
+      setActionError(err.message);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingTask(null);
+    setActionError(null);
   };
 
   return (
@@ -106,18 +107,52 @@ function App() {
           </p>
         </div>
 
+        {(actionError || error) && (
+          <div className="alert alert-danger" role="alert">
+            <strong>Error: </strong>
+            {actionError || error}
+            <button
+              type="button"
+              className="btn-close float-end"
+              aria-label="Cerrar error"
+              onClick={() => setActionError(null)}
+            />
+          </div>
+        )}
+
         <TaskForm
           onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
           initialValues={editingTask}
           onCancel={handleCancelEdit}
         />
 
-        <TaskList
-          tasks={tasks}
-          onEdit={handleEditTask}
-          onDelete={handleDeleteTask}
-          onToggle={handleToggleTask}
-        />
+        {loading ? (
+          <div className="text-center py-4">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando tareas...</span>
+            </div>
+            <p className="mt-2 text-muted">Cargando tareas...</p>
+          </div>
+        ) : (
+          <TaskList
+            tasks={tasks}
+            onEdit={handleEditTask}
+            onDelete={handleDeleteTask}
+            onToggle={handleToggleTask}
+          />
+        )}
+
+        {error && (
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() => reloadTasks().catch(() => {})}
+            >
+              Reintentar conexión
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
