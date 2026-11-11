@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from "react";
 import { checkHealth } from "./services/api";
+import Header from "./components/Header";
+import TaskForm from "./components/TaskForm";
+import TaskList from "./components/TaskList";
 
 function App() {
   const [status, setStatus] = useState("Conectando...");
@@ -14,40 +17,58 @@ function App() {
         setStatus("Sin conexión");
       });
   }, []);
+    const handleCreateTask = async (taskData) => {
+    console.log("Tarea enviada:", taskData);
+  };
+  const exampleTasks = [
+    {
+      id: 1,
+      title: "Estudiar React",
+      description: "Repasar componentes y props",
+      completed: false,
+    },
+    {
+      id: 2,
+      title: "Configurar Docker",
+      description: "Verificar los contenedores",
+      completed: true,
+    },
+  ];
+
+  const handleEditTask = (task) => {
+    console.log("Editar:", task);
+  };
+
+  const handleDeleteTask = (id) => {
+    console.log("Eliminar:", id);
+  };
+
+  const handleToggleTask = (id) => {
+    console.log("Cambiar estado:", id);
+  };
+
+
 
   return (
-    <div className="container py-5">
-      <h1 className="text-center mb-3">To-Do List</h1>
+    <div className="min-vh-100 bg-light">
+      <Header status={status} />
 
-      <p className="text-center text-muted">
-        The Evolution Challenge - Team 1: Build It
-      </p>
+      <main className="container py-5">
+        <div className="text-center mb-4">
+          <h2 className="fw-bold">Mis tareas</h2>
+            <p className="text-muted">
+              Organiza tus actividades de manera sencilla.
+            </p>
+        </div>
 
-      <div className="card shadow-sm p-4 mt-4">
-        <h4>Proyecto inicializado</h4>
-
-        <p>
-          Estado del backend:{" "}
-          <span
-            className={`badge ${
-              status === "Conectado"
-                ? "bg-success"
-                : "bg-secondary"
-            }`}
-          >
-            {status}
-          </span>
-        </p>
-
-        <p className="text-muted">
-          Base de desarrollo lista para implementar
-          las funcionalidades de la aplicación.
-        </p>
-
-        <button className="btn btn-primary">
-          Comenzar
-        </button>
-      </div>
+        <TaskForm onSubmit={handleCreateTask} />
+        <TaskList
+          tasks={exampleTasks}
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
+          onToggle={handleToggleTask}
+        />
+      </main>
     </div>
   );
 }
