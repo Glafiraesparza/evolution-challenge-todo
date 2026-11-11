@@ -24,6 +24,7 @@ const exampleTasks = [
 function App() {
   const [status, setStatus] = useState("Conectando...");
   const [tasks, setTasks] = useState(exampleTasks);
+  const [editingTask, setEditingTask] = useState(null);
 
   useEffect(() => {
     checkHealth()
@@ -46,7 +47,8 @@ function App() {
 
   // Estas funciones se implementarán en los siguientes pasos.
   const handleEditTask = (task) => {
-    console.log("Editar:", task);
+    setEditingTask(task);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteTask = (id) => {
@@ -55,6 +57,22 @@ function App() {
 
   const handleToggleTask = (id) => {
     console.log("Cambiar estado:", id);
+  };
+
+  const handleUpdateTask = async (taskData) => {
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.id === editingTask.id
+          ? { ...task, ...taskData }
+          : task
+      )
+    );
+
+    setEditingTask(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingTask(null);
   };
 
   return (
@@ -69,7 +87,11 @@ function App() {
           </p>
         </div>
 
-        <TaskForm onSubmit={handleCreateTask} />
+        <TaskForm
+          onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
+          initialValues={editingTask}
+          onCancel={handleCancelEdit}
+        />
 
         <TaskList
           tasks={tasks}
