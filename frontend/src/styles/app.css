@@ -1,0 +1,98 @@
+
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: #243047;
+  background-color: #f5f7fb;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+.todo-app {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #eef3ff 0%, #f8faff 55%);
+}
+
+.todo-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5eaf3;
+}
+
+.todo-brand {
+  color: #263a66;
+  letter-spacing: -0.5px;
+}
+
+.todo-container {
+  max-width: 900px;
+}
+
+.todo-card {
+  border: 1px solid #e8edf5 !important;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(31, 53, 94, 0.06);
+}
+
+.todo-card .form-control {
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+
+.todo-card .form-control:focus {
+  border-color: #718de8;
+  box-shadow: 0 0 0 3px rgba(86, 115, 218, 0.12);
+}
+
+.todo-app .btn {
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.todo-app .btn-primary {
+  background-color: #4668d8;
+  border-color: #4668d8;
+}
+
+.todo-app .btn-primary:hover {
+  background-color: #3555c1;
+  border-color: #3555c1;
+}
+
+.todo-app .list-group-item {
+  border-color: #edf0f6;
+  padding: 18px !important;
+}
+
+.todo-app .list-group-item:hover {
+  background-color: #fafbff;
+}
+
+.todo-app .form-check-input {
+  cursor: pointer;
+}
+
+@media (max-width: 576px) {
+  .todo-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .todo-card .card-body {
+    padding: 20px !important;
+  }
+
+  .todo-app .list-group-item .d-flex.align-items-start {
+    flex-wrap: wrap;
+  }
+
+  .todo-app .list-group-item .flex-grow-1 {
+    min-width: 75%;
+  }
+
+  .todo-app .list-group-item .btn {
+    font-size: 13px;
+  }
+}

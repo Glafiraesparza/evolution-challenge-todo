@@ -95,10 +95,10 @@ function App() {
   };
 
   return (
-    <div className="min-vh-100 bg-light">
+    <div className="todo-app">
       <Header status={status} />
 
-      <main className="container py-5">
+      <main className="container todo-container py-5">
         <div className="text-center mb-4">
           <h2 className="fw-bold">Mis tareas</h2>
           <p className="text-muted">

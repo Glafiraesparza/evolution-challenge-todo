@@ -3,7 +3,7 @@ import TaskItem from "./TaskItem";
 
 function TaskList({ tasks, onEdit, onDelete, onToggle }) {
   return (
-    <section className="card border-0 shadow-sm">
+    <section className="card todo-card">
       <div className="card-body p-4">
         <h2 className="h5 fw-bold mb-3">
           Lista de tareas ({tasks.length})

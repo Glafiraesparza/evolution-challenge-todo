@@ -40,7 +40,7 @@ function TaskForm({ onSubmit, initialValues = null, onCancel }) {
   };
 
   return (
-    <div className="card border-0 shadow-sm mb-4">
+    <div className="card todo-card mb-4">
       <div className="card-body p-4">
         <h3 className="h5 fw-bold mb-3">
           {isEditing ? "Editar tarea" : "Nueva tarea"}
