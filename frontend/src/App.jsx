@@ -52,7 +52,20 @@ function App() {
   };
 
   const handleDeleteTask = (id) => {
-    console.log("Eliminar:", id);
+    const confirmed = window.confirm(
+      "¿Estás seguro de que deseas eliminar esta tarea?"
+    );
+
+    if (!confirmed) return;
+
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== id)
+    );
+
+    // Si estamos editando esa tarea, cancelar la edición.
+    setEditingTask((currentTask) =>
+      currentTask?.id === id ? null : currentTask
+    );
   };
 
   const handleToggleTask = (id) => {
